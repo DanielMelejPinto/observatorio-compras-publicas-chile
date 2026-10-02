@@ -18,3 +18,4 @@ Reclutadores y líderes técnicos que evalúan habilidades en ingeniería de dat
 ## Estado del proyecto
 - [x] Hito 0 completado: Repositorio creado y alcance definido.
 - [x] Hito 1 completado: Entorno Python, Pandas y Diccionario de datos.
+- [x] Hito 2 completado: Extracción de API, variables de entorno y guardado crudo (Capa Bronce).

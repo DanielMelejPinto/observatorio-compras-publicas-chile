@@ -1,28 +1,18 @@
 import pandas as pd
-# 1. Muestra ficticia de órdenes de compra (lista de diccionarios)
-muestra_datos = [
-    {"Codigo": "1234-5-LE26", "Nombre": "Computadores", "Estado": "Aceptada", "Monto": 1500000},
-    {"Codigo": "9876-1-CM26", "Nombre": "Escritorios", "Estado": "Enviada", "Monto": 800000},
-    {"Codigo": "5555-2-LQ26", "Nombre": "Papelería", "Estado": "Aceptada", "Monto": 50000}
-]
+import json
 
-#2. Convertimo los datos en un DataFrame (la tabla maestra de pandas)
-df = pd.DataFrame(muestra_datos)
-
-#3. Exploramos los datos
-print("--- RESUMEN DE LA MUESTRA ---")
-print(f"Cantidad de órdenes: {len(df)}")
-print(f"Columnas disponibles: {list(df.columns)}\n")
-print("--- TABLA DE DATOS ---")
-print(df)
-
-#4. Analisis basico de los datos
-print("\n--- ANÁLISIS BÁSICO ---")
-
-#Filtrar: Nos quedamos solo con ls dilas donde el estado es "Aceptada"
-ordenes_aceptadas = df[df["Estado"] == "Aceptada"]
-print(f"Cantidad de ordenes Aceptadas: {len(ordenes_aceptadas)}")
-
-#Calcular: Sumamos la columna "Monto" de esas ordenes filtradas
-monto_total = ordenes_aceptadas["Monto"].sum()
-print(f"Suma total de órdenes aceptadas: ${monto_total}")
+# Reemplaza esto con el nombre de tu archivo exacto:
+nombre_archivo = "data/respuesta_02012024_20261002_201723.json"
+with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+    datos_brutos = json.load(archivo)
+# 2. La API guarda las ordenes dentro de una seccion llamada "Listado"
+lista_ordenes = datos_brutos["Listado"]
+# 3. Convertimos esa lista real a nuestra tabla de Pandas
+df = pd.DataFrame(lista_ordenes)
+# 4. Exploramos lo que trajo
+print("\n--- DATOS REALES DE MERCADO PUBLICO ---")
+print(f"Total de ordenes descargadas (del 2 de enero de 2024): {len(df)}")
+print(f"Columnas disponibles: {list(df.columns)}")
+# Veamos los primeros 3 registros
+print("\nPrimeras 3 ordenes:")
+print(df.head(3))
