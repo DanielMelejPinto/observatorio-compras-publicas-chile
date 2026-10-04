@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   base_de_datos:
     image: postgres:15
@@ -9,6 +11,13 @@ services:
       - "5432:5432"
     volumes:
       - datos_postgres:/var/lib/postgresql/data
+
+  metabase:
+    image: metabase/metabase:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - base_de_datos
 
 volumes:
   datos_postgres:

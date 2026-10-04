@@ -17,3 +17,8 @@
 **Fecha:** 2 de octubre de 2026
 - **Tarea completada:** Creación de archivo `docker-compose.yml` para levantar un servidor PostgreSQL local. Desarrollo del script `carga.py` usando SQLAlchemy para inyectar más de 10.000 registros mediante Pandas (`to_sql`).
 - **Verificación:** Ejecución exitosa de una consulta SQL validando que el total de filas coincide exactamente con los códigos únicos de las órdenes, confirmando una carga sin duplicados.
+
+## Hito 4: Analítica de Datos y SQL
+**Fecha:** 4 de octubre de 2026
+- **Tarea completada:** Exploración de base de datos utilizando la herramienta estándar de la industria (DBeaver).
+- **Consultas realizadas:** Uso de `SELECT`, `GROUP BY` y lógica condicional `CASE WHEN` para traducir y agregar estados de órdenes de compra, generando nuestro primer indicador de negocio.
