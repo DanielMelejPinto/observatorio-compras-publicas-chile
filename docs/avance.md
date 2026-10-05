@@ -22,3 +22,9 @@
 **Fecha:** 4 de octubre de 2026
 - **Tarea completada:** Exploración de base de datos utilizando la herramienta estándar de la industria (DBeaver).
 - **Consultas realizadas:** Uso de `SELECT`, `GROUP BY` y lógica condicional `CASE WHEN` para traducir y agregar estados de órdenes de compra, generando nuestro primer indicador de negocio.
+
+## Hito 5: Tableros Visuales y Business Intelligence
+**Fecha:** 4 de octubre de 2026
+- **Tarea completada:** Implementación de Metabase en el ecosistema Docker para creación de Dashboards.
+- **Arquitectura:** Se integró Metabase a `docker-compose.yml` para lectura en vivo desde PostgreSQL sin duplicar datos.
+- **Visualización:** Creación del primer panel interactivo (Dashboard) traduciendo consultas SQL a gráficos de negocio para tomadores de decisiones.

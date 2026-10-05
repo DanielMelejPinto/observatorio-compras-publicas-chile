@@ -1,23 +1,26 @@
-# Observatorio de Compras Públicas de Chile
+# Observatorio de Compras Publicas - Chile
 
-## Propósito
-Construir un proyecto de portafolio para extraer, conservar y analizar datos públicos de las órdenes de compra en Chile.
+Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde cero. El objetivo es extraer, procesar, almacenar y visualizar datos reales de las compras publicas del Estado de Chile utilizando la API oficial de Mercado Publico.
 
-## Público
-Reclutadores y líderes técnicos que evalúan habilidades en ingeniería de datos, modelado y visualización.
+## Stack Tecnologico (Modern Data Stack)
+* Lenguaje: Python 3
+* Extraccion y Limpieza: requests, pandas
+* Base de Datos: PostgreSQL
+* Infraestructura: Docker y Docker Compose
+* Exploracion SQL: DBeaver
+* Business Intelligence (BI): Metabase
 
-## Alcance
-- **Período:** Un mes de órdenes de compra.
-- **Cobertura:** 3 organismos públicos (por definir).
+## Hoja de Ruta (Roadmap del Proyecto)
 
-## Preguntas a responder
-1. ¿Cuántas órdenes emite cada organismo seleccionado?
-2. ¿Qué proveedores concentran el mayor monto, por moneda y estado?
-3. ¿Cómo cambia la actividad durante el período observado?
+- [x] Hito 0: Configuracion del entorno y Git.
+- [x] Hito 1: Script basico de Python (fundamentos).
+- [x] Hito 2: Conexion a la API (Mercado Publico) y extraccion de capa cruda (JSON).
+- [x] Hito 3: Infraestructura en Docker (PostgreSQL) y Carga de datos masiva con Pandas.
+- [x] Hito 4: Analitica de Datos y SQL (Exploracion visual en DBeaver y logica condicional).
+- [x] Hito 5: Tableros visuales interactivos y BI (Metabase).
+- [ ] Hito 6: Transformacion profesional de datos (dbt - Data Build Tool).
+- [ ] Hito 7: Orquestacion y automatizacion (Apache Airflow).
+- [ ] Hito 8: Despliegue continuo CI/CD (GitHub Actions).
 
-## Estado del proyecto
-- [x] Hito 0 completado: Repositorio creado y alcance definido.
-- [x] Hito 1 completado: Entorno Python, Pandas y Diccionario de datos.
-- [x] Hito 2 completado: Extracción de API, variables de entorno y guardado crudo (Capa Bronce).
-- [x] Hito 3 completado: Infraestructura con Docker, PostgreSQL y carga repetible.cffgtdrseesd
-- [x] Hito 4 completado: Indicadores y SQL.
+## Documentacion Extendida
+Para ver el paso a paso detallado, comandos ejecutados y conceptos tecnicos aprendidos en cada hito, revisa el archivo de bitacora en: docs/avance.md
