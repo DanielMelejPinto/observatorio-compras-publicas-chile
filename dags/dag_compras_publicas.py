@@ -24,7 +24,7 @@ with DAG(
     dag_id='pipeline_observatorio_compras',
     default_args=default_args,
     description='Pipeline ETL y de modelado de datos para Compras Publicas de Chile',
-    schedule_interval='@daily',
+    schedule='@daily',,
     catchup=False,
     tags=['ingenieria_de_datos', 'mercado_publico', 'dbt']
 ) as dag:
