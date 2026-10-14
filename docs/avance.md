@@ -66,3 +66,20 @@ Resolvi este problema aplicando el patron estandar de ingenieria de datos: susti
 
 ### 4. Resultado
 El DAG completo se ejecuto exitosamente en verde. El flujo completo (Extraccion API -> Carga SQL -> Transformacion dbt -> Validacion dbt test) quedo automatizado y monitoreable desde la interfaz web de Airflow.
+
+## Hito 8: Integracion Continua y Pruebas Automatizadas (CI/CD con GitHub Actions)
+**Fecha:** 13 de octubre de 2026
+
+Para adoptar las mejores practicas de la cultura DataOps y asegurar que ningun cambio en el codigo rompa los pipelines existentes, implemente Integracion Continua (CI) mediante GitHub Actions.
+
+### 1. Diseno del Flujo de Trabajo
+Configure el archivo `.github/workflows/ci.yml` para activarse automaticamente ante cualquier `push` o `pull request` sobre la rama `main`. El pipeline aprovisiona un entorno virtual en la nube (Ubuntu) con Python 3.9 e instala las dependencias de testing.
+
+### 2. Bateria de Pruebas Automatizadas
+El flujo ejecuta tres barreras de control de calidad secuenciales:
+* **Analisis Estatico y Sintaxis (Flake8):** Examina el codigo Python para detectar errores de sintaxis critica, variables no definidas o importaciones rotas antes de la ejecucion.
+* **Prueba de Integridad del DAG (Airflow DagBag):** Utiliza la clase `DagBag` para cargar el pipeline de compras publicas en memoria sin ejecutarlo, verificando mediante una asercion (`assert len(bag.import_errors) == 0`) que no existan ciclos infinitos, errores de dependencias ni fallas de sintaxis en los operadores.
+* **Parseo y Compilacion de Modelos (dbt parse):** Valida que la estructura del proyecto dbt, los modelos SQL (`ordenes_transformadas.sql`) y las definiciones de pruebas (`schema.yml`) cumplan con los estandares de compilacion sin requerir una conexion a base de datos activa.
+
+### 3. Insignia de Calidad (Build Badge)
+Incorpore una insignia dinamica en el archivo `README.md` que refleja en tiempo real el estado de las pruebas (passing/failing), certificando la robustez y calidad de la plataforma.

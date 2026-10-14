@@ -1,5 +1,7 @@
 # Observatorio de Compras Publicas - Chile
 
+![DataOps CI](https://github.com/DanielMelejPinto/observatorio-compras-publicas-chile/actions/workflows/ci.yml/badge.svg)
+
 Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde cero. El objetivo es extraer, procesar, almacenar y visualizar datos reales de las compras publicas del Estado de Chile utilizando la API oficial de Mercado Publico.
 
 ## Stack Tecnologico (Modern Data Stack)
@@ -9,6 +11,7 @@ Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde c
 * Infraestructura: Docker y Docker Compose
 * Transformacion y Calidad de Datos: dbt (Data Build Tool)
 * Orquestacion de Pipelines: Apache Airflow
+* CI/CD y Pruebas Continuas: GitHub Actions
 * Exploracion SQL: DBeaver
 * Business Intelligence (BI): Metabase
 
@@ -22,7 +25,7 @@ Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde c
 - [x] Hito 5: Tableros visuales interactivos y BI (Metabase).
 - [x] Hito 6: Transformacion profesional de datos (dbt - Data Build Tool).
 - [x] Hito 7: Orquestacion y automatizacion (Apache Airflow).
-- [ ] Hito 8: Despliegue continuo CI/CD (GitHub Actions).
+- [x] Hito 8: Despliegue continuo CI/CD (GitHub Actions).
 
 ## Documentacion Extendida
 Para ver el paso a paso detallado, comandos ejecutados y conceptos tecnicos aprendidos en cada hito, revisa el archivo de bitacora en: docs/avance.md
