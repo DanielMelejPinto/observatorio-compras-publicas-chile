@@ -1,7 +1,7 @@
 SELECT 
-    "Codigo",
-    "Nombre",
-    "CodigoEstado",
+    "Codigo" AS codigo,
+    "Nombre" AS nombre,
+    "CodigoEstado" AS codigo_estado,
     CASE 
         WHEN "CodigoEstado" = 12 THEN 'Recepcion Conforme'
         WHEN "CodigoEstado" = 8  THEN 'Aceptada'

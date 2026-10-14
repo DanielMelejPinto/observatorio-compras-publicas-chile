@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: ordenes_transformadas
+    description: "Vista de ordenes de compra con codigos de estado traducidos a texto legible para negocio."
+    columns:
+      - name: codigo
+        description: "Identificador unico de la orden de compra."
+        tests:
+          - unique
+          - not_null
+
+      - name: codigo_estado
+        description: "Codigo numerico original entregado por la API de Mercado Publico."
+        tests:
+          - not_null
+
+      - name: descripcion_estado
+        description: "Traduccion del estado a formato entendible."
+        tests:
+          - not_null

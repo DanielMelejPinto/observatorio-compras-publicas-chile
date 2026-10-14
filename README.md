@@ -18,7 +18,7 @@ Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde c
 - [x] Hito 3: Infraestructura en Docker (PostgreSQL) y Carga de datos masiva con Pandas.
 - [x] Hito 4: Analitica de Datos y SQL (Exploracion visual en DBeaver y logica condicional).
 - [x] Hito 5: Tableros visuales interactivos y BI (Metabase).
-- [ ] Hito 6: Transformacion profesional de datos (dbt - Data Build Tool).
+- [x] Hito 6: Transformacion profesional de datos (dbt - Data Build Tool).
 - [ ] Hito 7: Orquestacion y automatizacion (Apache Airflow).
 - [ ] Hito 8: Despliegue continuo CI/CD (GitHub Actions).
 

@@ -28,3 +28,16 @@
 - **Tarea completada:** Implementación de Metabase en el ecosistema Docker para creación de Dashboards.
 - **Arquitectura:** Se integró Metabase a `docker-compose.yml` para lectura en vivo desde PostgreSQL sin duplicar datos.
 - **Visualización:** Creación del primer panel interactivo (Dashboard) traduciendo consultas SQL a gráficos de negocio para tomadores de decisiones.
+
+## Hito 6: Transformacion Profesional de Datos (dbt)
+
+Para llevar la calidad de los datos al siguiente nivel y automatizar la limpieza, decidi implementar dbt (Data Build Tool), el estandar actual de la industria para la capa de Analytics Engineering. 
+
+### 1. Inicializacion y Conexion
+Instale el adaptador `dbt-postgres` en mi entorno virtual. Utilizando el comando `dbt init`, genere la estructura de carpetas estandar y configure el perfil para que dbt se comunicara directamente con mi contenedor de PostgreSQL. Valide la conexion de red exitosamente mediante el comando `dbt debug`.
+
+### 2. Modelado de Datos
+Cree mi primer modelo (`ordenes_transformadas.sql`) directamente dentro de la carpeta `models`. Ahi traslade la logica de negocio (`CASE WHEN`) que habia disenado durante la fase analitica exploratoria.
+
+### 3. Compilacion y Ejecucion Automatizada
+Al ejecutar el comando `dbt run`, la herramienta tomo mi codigo SQL, lo compilo y le envio la instruccion a PostgreSQL para construir dinamicamente una Vista (View). Ahora tengo un modelo de datos permanentemente limpio y desnormalizado, listo para que Metabase u otra herramienta de BI lo consuma de inmediato sin recalcular reglas complejas.
