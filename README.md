@@ -26,6 +26,16 @@ flowchart LR
 
 ---
 
+## Vista previa
+
+### Dashboard en Metabase
+![Dashboard Metabase](docs/img/dashboard_metabase.png)
+
+### Grafo del Pipeline en Apache Airflow
+![DAG Airflow](docs/img/airflow_dag.png)
+
+---
+
 ## Stack Tecnologico (Modern Data Stack)
 
 | Capa | Tecnologia | Descripcion / Proposito |
@@ -68,12 +78,22 @@ cd observatorio-compras-publicas-chile
 ```
 
 ### 2. Configurar variables de entorno
-Crea un archivo `.env` en la raiz con tu ticket de la API:
+Copia la plantilla y configura tu ticket de la API:
+```bash
+cp .env.example .env
+```
+Edita `.env` con tus credenciales:
 ```env
 TICKET_MERCADO_PUBLICO=tu_ticket_aqui
 ```
 
-### 3. Levantar la plataforma completa en Docker
+### 3. Instalar dependencias locales (opcional)
+Si deseas ejecutar los scripts de extraccion o carga directamente en tu sistema fuera de Docker:
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Levantar la plataforma completa en Docker
 ```bash
 docker compose up -d
 ```
@@ -82,6 +102,16 @@ Este comando iniciara en paralelo:
 * **PostgreSQL:** `localhost:5432` (Base de datos transaccional y analitica)
 * **Metabase:** `http://localhost:3000` (Dashboards interactivos de BI)
 * **Apache Airflow:** `http://localhost:8080` (Orquestador de pipelines - Usuario: `admin`)
+
+---
+
+## Limitaciones y proximos pasos
+
+* **Credenciales de desarrollo:** Las contraseñas de PostgreSQL y Airflow definidas en la configuracion son exclusivas para entornos locales de desarrollo y no deben utilizarse en produccion.
+* **Granularidad de datos:** El pipeline consume el endpoint de listado diario por fecha. Los montos detallados por item requieren invocar el endpoint individual por cada orden, lo que quedo fuera del alcance para evitar exceder las cuotas de peticion de la API.
+* **Estrategia de carga:** La ingesta sobre `ordenes_brutas` opera como un full refresh diario (`TRUNCATE` + `append`) para garantizar idempotencia y consistencia sin duplicados.
+* **Capas de modelado en dbt:** Se implemento una sola vista analitica (`ordenes_transformadas`) por simplicidad operativa; un proximo paso natural es desacoplar en capas formales de `staging` y `marts`.
+* **Alcance del CI/CD:** El flujo de GitHub Actions valida sintaxis (Flake8), integridad estructural del DAG (`DagBag`) y parseo de dbt (`dbt parse`), sin ejecutar la ingesta completa en la nube.
 
 ---
 

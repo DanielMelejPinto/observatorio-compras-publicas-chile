@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 import pandas as pd
 import requests
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, inspect, text
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -30,40 +30,58 @@ with DAG(
 ) as dag:
 
     # 1. Extraccion desde la API
-    def extraer_datos_mercado_publico():
+    def extraer_datos_mercado_publico(**context):
         load_dotenv('/opt/airflow/.env')
         ticket = os.getenv("TICKET_MERCADO_PUBLICO")
-        
-        # Fecha de prueba para el flujo diario
-        url = f"https://api.mercadopublico.cl/servicios/v1/publico/ordenesdecompra.json?fecha=02012024&ticket={ticket}"
+
+        # Tomo la fecha del intervalo que procesa Airflow en formato ddmmyyyy
+        data_interval_start = context.get('data_interval_start')
+        if data_interval_start:
+            fecha_api = data_interval_start.strftime("%d%m%Y")
+        else:
+            fecha_api = (datetime.now() - timedelta(days=1)).strftime("%d%m%Y")
+
+        url = f"https://api.mercadopublico.cl/servicios/v1/publico/ordenesdecompra.json?fecha={fecha_api}&ticket={ticket}"
         respuesta = requests.get(url, timeout=30)
-        
+
         if respuesta.status_code == 200:
-            ruta_archivo = "/opt/airflow/data/respuesta_airflow.json"
+            carpeta_data = "/opt/airflow/data"
+            os.makedirs(carpeta_data, exist_ok=True)
+            ruta_archivo = os.path.join(carpeta_data, f"respuesta_{fecha_api}.json")
+
             with open(ruta_archivo, "w", encoding="utf-8") as archivo:
                 json.dump(respuesta.json(), archivo)
-            print(f"Extraccion exitosa. Archivo guardado en {ruta_archivo}")
+            print(f"Extraccion exitosa para fecha {fecha_api}. Archivo guardado en {ruta_archivo}")
         else:
-            raise Exception(f"Fallo en la API de Mercado Publico. Status: {respuesta.status_code}")
+            raise Exception(f"Fallo en la API de Mercado Publico para fecha {fecha_api}. Status: {respuesta.status_code}")
 
     # 2. Inyeccion hacia PostgreSQL
-    def cargar_datos_a_postgres():
-        ruta_archivo = "/opt/airflow/data/respuesta_airflow.json"
+    def cargar_datos_a_postgres(**context):
+        data_interval_start = context.get('data_interval_start')
+        if data_interval_start:
+            fecha_api = data_interval_start.strftime("%d%m%Y")
+        else:
+            fecha_api = (datetime.now() - timedelta(days=1)).strftime("%d%m%Y")
+
+        ruta_archivo = f"/opt/airflow/data/respuesta_{fecha_api}.json"
         with open(ruta_archivo, "r", encoding="utf-8") as archivo:
             datos = json.load(archivo)
-            
+
         df = pd.DataFrame(datos["Listado"])
-        
+
         motor = create_engine('postgresql://admin:password123@base_de_datos:5432/compras_publicas')
-        
-        # Vaciamos los registros anteriores con TRUNCATE y transaccion asegurada (begin)
-        # Esto evita borrar la tabla completa y mantiene intacta la vista de dbt
-        with motor.begin() as conexion:
-            conexion.execute(text("TRUNCATE TABLE ordenes_brutas;"))
-        
-        # Insertamos los nuevos datos sobre la tabla existente
-        df.to_sql('ordenes_brutas', con=motor, if_exists='append', index=False)
-        print(f"Carga exitosa de {len(df)} registros en ordenes_brutas")
+
+        # Verifico si la tabla existe; si es la primera ejecucion se crea con replace
+        # En ejecuciones posteriores uso TRUNCATE + append para no romper las vistas de dbt
+        inspector = inspect(motor)
+        if not inspector.has_table('ordenes_brutas'):
+            df.to_sql('ordenes_brutas', con=motor, if_exists='replace', index=False)
+            print(f"Tabla 'ordenes_brutas' creada con exito ({len(df)} registros)")
+        else:
+            with motor.begin() as conexion:
+                conexion.execute(text("TRUNCATE TABLE ordenes_brutas;"))
+            df.to_sql('ordenes_brutas', con=motor, if_exists='append', index=False)
+            print(f"Tabla 'ordenes_brutas' truncada y recargada con exito ({len(df)} registros)")
 
     # Declaracion de Tareas
     tarea_extraccion = PythonOperator(

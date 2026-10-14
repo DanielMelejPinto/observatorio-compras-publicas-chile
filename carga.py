@@ -1,42 +1,49 @@
+import glob
 import json
+import os
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 
-# 1. Configurar la conexion a nuestra base de datos Docker
-# El formato universal es: postgresql://usuario:contraseña@servidor:puerto/base_de_datos
+# Instancio el motor de conexion apuntando a mi contenedor local de PostgreSQL en Docker
 url_conexion = "postgresql://admin:password123@localhost:5432/compras_publicas"
 motor = create_engine(url_conexion)
 
-# 2. Leer nuestro archivo crudo (Reemplaza con tu nombre de archivo exacto)
-nombre_archivo = "data/respuesta_02012024_20261002_201723.json"
+# Selecciono dinamicamente el archivo mas reciente dentro de la capa cruda
+archivos = glob.glob("data/respuesta_*.json")
+if not archivos:
+    raise FileNotFoundError("No se encontraron archivos en data/ con el patron respuesta_*.json")
 
-print(f"Leyendo datos desde {nombre_archivo}...")
+nombre_archivo = max(archivos, key=os.path.getmtime)
+print(f"Cargando el archivo mas reciente: {nombre_archivo}")
+
+# Cargo el archivo JSON desde la capa raw local
 with open(nombre_archivo, "r", encoding="utf-8") as archivo:
-    datos_brutos = json.load(archivo)
+    datos_crudos = json.load(archivo)
 
-# Convertir la lista de ordenes a una tabla Pandas
-df = pd.DataFrame(datos_brutos["Listado"])
+# Aislo unicamente el nodo 'Listado' que contiene la data a tabular
+lista_ordenes = datos_crudos["Listado"]
 
-print("Iniciando inyeccion de datos a PostgreSQL (esto puede tomar unos segundos)...")
+# Convierto la estructura anidada a un DataFrame para el procesamiento tabular
+df = pd.DataFrame(lista_ordenes)
 
-# 3. Enviar toda la tabla a PostgreSQL magicamente
-# if_exists="replace" significa que si la tabla ya existe, la sobreescribe (reemplaza)
-df.to_sql("ordenes_brutas", con=motor, if_exists="replace", index=False)
+# Si la tabla no existe la creo; si ya existe uso TRUNCATE + append para no romper vistas de dbt
+inspector = inspect(motor)
+if not inspector.has_table("ordenes_brutas"):
+    df.to_sql("ordenes_brutas", con=motor, if_exists="replace", index=False)
+else:
+    with motor.begin() as conexion:
+        conexion.execute(text("TRUNCATE TABLE ordenes_brutas;"))
+    df.to_sql("ordenes_brutas", con=motor, if_exists="append", index=False)
 
-print("¡Carga exitosa! Se creo la tabla 'ordenes_brutas' con todos los registros.")
+print("Datos cargados exitosamente en la tabla 'ordenes_brutas'.")
 
-# 4. Verificar ejecutando SQL real
-print("\n--- VERIFICACION EN POSTGRESQL ---")
-
-# Esta es una consulta SQL estandar: 
-# Cuenta todo (COUNT(*)) y cuenta codigos unicos (COUNT(DISTINCT "Codigo"))
+# Verificacion del total de registros cargados
 consulta_sql = """
     SELECT 
         COUNT(*) AS total_filas, 
         COUNT(DISTINCT "Codigo") AS ordenes_unicas 
     FROM ordenes_brutas;
 """
-
-# pd.read_sql() ejecuta nuestro texto SQL en la base de datos y nos trae el resultado
 df_verificacion = pd.read_sql(consulta_sql, con=motor)
+print("\n--- Verificacion en PostgreSQL ---")
 print(df_verificacion)

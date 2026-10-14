@@ -217,6 +217,13 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Ignorar los archivos de datos descargados
-data/*.json
+# Ignorar archivos del sistema operativo
+.DS_Store
 
+# Ignorar archivos de configuracion local de dbt
+*.user.yml
+.user.yml
+
+# Ignorar los archivos de datos descargados pero mantener la carpeta
+data/*.json
+!data/.gitkeep
