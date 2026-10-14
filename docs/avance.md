@@ -83,3 +83,6 @@ El flujo ejecuta tres barreras de control de calidad secuenciales:
 
 ### 3. Insignia de Calidad (Build Badge)
 Incorpore una insignia dinamica en el archivo `README.md` que refleja en tiempo real el estado de las pruebas (passing/failing), certificando la robustez y calidad de la plataforma.
+
+## Nota de calidad de datos: correccion del mapeo de estados
+Al revisar el dashboard, la categoria "Otro Estado" concentraba cerca del 40% de las ordenes. Contraste el `CASE WHEN` con la documentacion oficial de la API y detecte que habia mezclado los codigos de licitaciones con los de ordenes de compra (la Aceptada es el codigo 6, no el 8). Corregi el modelo de dbt y `analisis.sql`, y valide que los 19.897 registros siguieran sumando igual tras el cambio.

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   base_de_datos:
     image: postgres:15

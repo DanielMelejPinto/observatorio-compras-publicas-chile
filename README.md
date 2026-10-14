@@ -101,7 +101,7 @@ docker compose up -d
 Este comando iniciara en paralelo:
 * **PostgreSQL:** `localhost:5432` (Base de datos transaccional y analitica)
 * **Metabase:** `http://localhost:3000` (Dashboards interactivos de BI)
-* **Apache Airflow:** `http://localhost:8080` (Orquestador de pipelines - Usuario: `admin`)
+* **Apache Airflow:** `http://localhost:8080` (Orquestador de pipelines - Usuario: `admin`; la contraseña se genera al iniciar: `docker compose exec airflow cat /opt/airflow/standalone_admin_password.txt`)
 
 ---
 
