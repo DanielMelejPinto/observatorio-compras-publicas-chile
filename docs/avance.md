@@ -30,14 +30,20 @@
 - **Visualización:** Creación del primer panel interactivo (Dashboard) traduciendo consultas SQL a gráficos de negocio para tomadores de decisiones.
 
 ## Hito 6: Transformacion Profesional de Datos (dbt)
+**Fecha:** 13 de octubre de 2026
 
-Para llevar la calidad de los datos al siguiente nivel y automatizar la limpieza, decidi implementar dbt (Data Build Tool), el estandar actual de la industria para la capa de Analytics Engineering. 
+Para llevar la calidad de los datos al nivel de produccion y automatizar la limpieza, implemente dbt (Data Build Tool), el estandar actual de Analytics Engineering.
 
 ### 1. Inicializacion y Conexion
-Instale el adaptador `dbt-postgres` en mi entorno virtual. Utilizando el comando `dbt init`, genere la estructura de carpetas estandar y configure el perfil para que dbt se comunicara directamente con mi contenedor de PostgreSQL. Valide la conexion de red exitosamente mediante el comando `dbt debug`.
+Instale el adaptador `dbt-postgres` en mi entorno virtual. Con `dbt init`, genere la estructura base del proyecto y configure el perfil para conectar con el contenedor de PostgreSQL en Docker. Valide la conectividad exitosamente mediante `dbt debug`.
 
-### 2. Modelado de Datos
-Cree mi primer modelo (`ordenes_transformadas.sql`) directamente dentro de la carpeta `models`. Ahi traslade la logica de negocio (`CASE WHEN`) que habia disenado durante la fase analitica exploratoria.
+### 2. Modelado de Datos y Estandarizacion Snake_Case
+Cree el modelo `models/ordenes_transformadas.sql` trasladando la logica condicional (`CASE WHEN`). 
+Durante las pruebas enfrente un desafio tecnico real: PostgreSQL convierte identificadores no entrecomillados a minusculas, causando incompatibilidad con los nombres originales de la API que tenian mayusculas (`Codigo`, `CodigoEstado`). Aplique la mejor practica de la industria: estandarice todas las columnas a `snake_case` (`codigo`, `nombre`, `codigo_estado`, `descripcion_estado`), eliminando la necesidad de usar comillas dobles.
 
-### 3. Compilacion y Ejecucion Automatizada
-Al ejecutar el comando `dbt run`, la herramienta tomo mi codigo SQL, lo compilo y le envio la instruccion a PostgreSQL para construir dinamicamente una Vista (View). Ahora tengo un modelo de datos permanentemente limpio y desnormalizado, listo para que Metabase u otra herramienta de BI lo consuma de inmediato sin recalcular reglas complejas.
+### 3. Compilacion y Ejecucion
+Al ejecutar `dbt run`, dbt compilo el codigo y PostgreSQL construyo automaticamente una Vista (`public.ordenes_transformadas`). Esto permite que herramientas analiticas como Metabase consuman la capa limpia directamente sin recalcular reglas de negocio al vuelo.
+
+### 4. Pruebas de Calidad de Datos (Data Quality Tests)
+Cree el archivo `models/schema.yml` para auditar la integridad de la vista. Defini pruebas de unicidad (`unique`) y no nulidad (`not_null`) sobre la clave primaria `codigo`, asi como validaciones de presencia en los estados.
+Al correr `dbt test`, el sistema ejecuto 4 consultas de asercion sobre PostgreSQL, pasando exitosamente con `PASS=4 WARN=0 ERROR=0`, garantizando que no existan duplicados ni datos huerfanos.
