@@ -47,3 +47,22 @@ Al ejecutar `dbt run`, dbt compilo el codigo y PostgreSQL construyo automaticame
 ### 4. Pruebas de Calidad de Datos (Data Quality Tests)
 Cree el archivo `models/schema.yml` para auditar la integridad de la vista. Defini pruebas de unicidad (`unique`) y no nulidad (`not_null`) sobre la clave primaria `codigo`, asi como validaciones de presencia en los estados.
 Al correr `dbt test`, el sistema ejecuto 4 consultas de asercion sobre PostgreSQL, pasando exitosamente con `PASS=4 WARN=0 ERROR=0`, garantizando que no existan duplicados ni datos huerfanos.
+
+## Hito 7: Orquestacion y Automatizacion con Apache Airflow
+**Fecha:** 13 de octubre de 2026
+
+Para eliminar la ejecucion manual de scripts y simular un entorno de produccion continuo, integre Apache Airflow al ecosistema contenerizado de Docker.
+
+### 1. Infraestructura y Redes
+Incorpore el servicio de Airflow (`apache/airflow:2.8.3-python3.9`) al archivo `docker-compose.yml` en modo `standalone`. Esto permitio que el programador (Scheduler) y el servidor web corrieran en el puerto 8080 compartiendo la misma red interna de Docker con PostgreSQL y Metabase. Cree un archivo `transformacion/profiles.yml` autocontenido para que Airflow pudiera invocar dbt apuntando al host `base_de_datos`.
+
+### 2. Diseno del Grafo Aciclico Dirigido (DAG)
+Programe el pipeline en `dags/dag_compras_publicas.py` con frecuencia diaria (`@daily`) utilizando 4 tareas encadenadas:
+`extraer_datos_api >> cargar_datos_postgres >> transformar_con_dbt >> validar_calidad_con_dbt`
+
+### 3. Resolucion de Desafio Tecnico (Integridad Referencial en PostgreSQL)
+Durante la ejecucion inicial, la tarea de carga fallo porque Pandas con `if_exists='replace'` ejecutaba un `DROP TABLE ordenes_brutas`. PostgreSQL impidio la eliminacion debido a que la vista de dbt (`ordenes_transformadas`) dependia de ella.
+Resolvi este problema aplicando el patron estandar de ingenieria de datos: sustitui la destruccion de la tabla por una sentencia `TRUNCATE TABLE ordenes_brutas` dentro de una transaccion (`motor.begin()`) seguido de `if_exists='append'`. Esto garantizo la idempotencia sin romper las vistas dependientes ni interrumpir los dashboards de Metabase.
+
+### 4. Resultado
+El DAG completo se ejecuto exitosamente en verde. El flujo completo (Extraccion API -> Carga SQL -> Transformacion dbt -> Validacion dbt test) quedo automatizado y monitoreable desde la interfaz web de Airflow.

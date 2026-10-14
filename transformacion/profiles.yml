@@ -1,0 +1,12 @@
+transformacion:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: base_de_datos
+      user: admin
+      password: password123
+      port: 5432
+      dbname: compras_publicas
+      schema: public
+      threads: 1

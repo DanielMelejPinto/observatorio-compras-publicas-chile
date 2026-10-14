@@ -7,6 +7,8 @@ Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde c
 * Extraccion y Limpieza: requests, pandas
 * Base de Datos: PostgreSQL
 * Infraestructura: Docker y Docker Compose
+* Transformacion y Calidad de Datos: dbt (Data Build Tool)
+* Orquestacion de Pipelines: Apache Airflow
 * Exploracion SQL: DBeaver
 * Business Intelligence (BI): Metabase
 
@@ -19,7 +21,7 @@ Este es un proyecto de Ingenieria de Datos (Data Engineering) construido desde c
 - [x] Hito 4: Analitica de Datos y SQL (Exploracion visual en DBeaver y logica condicional).
 - [x] Hito 5: Tableros visuales interactivos y BI (Metabase).
 - [x] Hito 6: Transformacion profesional de datos (dbt - Data Build Tool).
-- [ ] Hito 7: Orquestacion y automatizacion (Apache Airflow).
+- [x] Hito 7: Orquestacion y automatizacion (Apache Airflow).
 - [ ] Hito 8: Despliegue continuo CI/CD (GitHub Actions).
 
 ## Documentacion Extendida

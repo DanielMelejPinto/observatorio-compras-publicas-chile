@@ -19,5 +19,24 @@ services:
     depends_on:
       - base_de_datos
 
+  airflow:
+    image: apache/airflow:2.8.3-python3.9
+    command: standalone
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+      - _PIP_ADDITIONAL_REQUIREMENTS=dbt-postgres pandas sqlalchemy psycopg2-binary requests python-dotenv
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./.env:/opt/airflow/.env
+      - ./transformacion:/opt/airflow/transformacion
+    depends_on:
+      - base_de_datos
+
 volumes:
   datos_postgres:
